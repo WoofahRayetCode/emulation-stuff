@@ -3,24 +3,24 @@
 # Get the directory of the script
 dir="$(dirname "$0")"
 
-# Create an array to hold the names of iso files to be deleted
+# Create an array to hold the names of iso, cue, and bin files to be deleted
 declare -a to_delete
 
-# Iterate over each .iso file in the directory
-for isofile in "$dir"/*.iso; do
+# Iterate over each .iso, .cue, and .bin file in the directory
+for file in "$dir"/*.iso "$dir"/*.cue "$dir"/*.bin; do
     # Get the base name of the file (without extension)
-    base="${isofile%.*}"
+    base="${file%.*}"
 
     # Convert to chd
-    echo "Converting $isofile to $base.chd..."
-    chdman createcd -i "$isofile" -o "$base.chd"
+    echo "Converting $file to $base.chd..."
+    chdman createcd -i "$file" -o "$base.chd"
 
-    # If the conversion was successful, add the iso file to the deletion array
+    # If the conversion was successful, add the file to the deletion array
     if [ $? -eq 0 ]; then
-        echo "Conversion successful, marking $isofile for deletion..."
-        to_delete+=("$isofile")
+        echo "Conversion successful, marking $file for deletion..."
+        to_delete+=("$file")
     else
-        echo "Conversion of $isofile failed."
+        echo "Conversion of $file failed."
     fi
 done
 
